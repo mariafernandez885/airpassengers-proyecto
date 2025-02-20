@@ -1,60 +1,58 @@
-#  Carga del dataset
-# ------------------------
-data("AirPassengers")  # Cargar dataset en R
+install.packages("tseries")
 
-# Ver estructura del dataset
-print(class(AirPassengers))   # Verificar si es una serie temporal (ts)
-print(summary(AirPassengers)) # Resumen estadístico
-print(start(AirPassengers))   # Inicio de la serie
-eprint(end(AirPassengers))     # Fin de la serie
-print(frequency(AirPassengers)) # Frecuencia: 12 (mensual)
 
-# Exploración inicial
-# ------------------------
-library(ggplot2)
-library(ggfortify)
+data("AirPassengers")
 
-autoplot(AirPassengers) + 
-  ggtitle("Número de pasajeros de aerolíneas (1949-1960)") +
-  xlab("Año") +
-  ylab("Pasajeros")
+print(class(AirPassengers))   
+print(summary(AirPassengers)) 
+print(start(AirPassengers))   
+print(end(AirPassengers))   
+print(frequency(AirPassengers)) 
 
-# Media y desviación estándar
-print(mean(AirPassengers))  # Media
-print(sd(AirPassengers))    # Desviación estándar
+# Grafico
+plot(AirPassengers, main="Número de pasajeros aéreos (1949-1960)", col="blue", lwd=2, ylab="Pasajeros", xlab="Año")
 
-# Análisis de tendencia y estacionalidad
-# ------------------------------------------
-decomp <- decompose(AirPassengers, type = "multiplicative")
-autoplot(decomp)
+# estadístics descriptivos
+media <- mean(AirPassengers)
+desviacion <- sd(AirPassengers)
 
-# Análisis de estacionariedad
-# --------------------------------
+cat("Media:", media, "\n")
+cat("Desviación estándar:", desviacion, "\n")
+
+# Descomposición de la serie temporal
+descomposicion <- decompose(AirPassengers)
+plot(descomposicion)
+
+# librería para adf.test
 library(tseries)
 
-# Gráficos ACF y PACF
-acf(AirPassengers)
-pacf(AirPassengers)
+# Grafica autocorrelación
+acf(AirPassengers, main="Autocorrelación de la serie AirPassengers")
+pacf(AirPassengers, main="Autocorrelación parcial de la serie AirPassengers")
 
 # Prueba de Dickey-Fuller
-adf.test(AirPassengers)
+adf_resultado <- adf.test(AirPassengers)
+print(adf_resultado)
 
-# Si no es estacionaria, diferenciamos la serie
-AP_diff <- diff(AirPassengers)
-autoplot(AP_diff)
-adf.test(AP_diff)  # Revisamos de nuevo
 
-#  Detección de valores atípicos
-# ---------------------------------
+# Diferenciación
+AirPassengers_diff <- diff(AirPassengers)
+plot(AirPassengers_diff, main="Serie diferenciada", col="red", lwd=2)
+
+# Repetimos Dickey-Fuller
+adf.test(AirPassengers_diff)
+
+# Boxplot para detectar valores atípicos
 boxplot(AirPassengers, main="Detección de valores atípicos")
 
 # Destacar valores atípicos en la serie
-autoplot(AirPassengers) +
-  geom_point(data = data.frame(time = time(AirPassengers),
-                               value = AirPassengers),
-             aes(x = time, y = value),
-             color = "red", size = 2)
+outliers <- boxplot.stats(AirPassengers)$out
+outliers
 
-# Interpretación de resultados
-# --------------------------------
-print("La serie muestra una tendencia creciente con un patrón estacional claro. Hay algunos valores atípicos, pero siguen la estacionalidad esperada.")
+
+# Marcar valores atípicos en el gráfico original
+plot(AirPassengers, main="Número de pasajeros con valores atípicos", col="blue", lwd=2)
+points(time(AirPassengers)[AirPassengers %in% outliers], outliers, col="red", pch=19)
+
+
+
