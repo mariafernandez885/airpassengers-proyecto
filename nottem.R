@@ -52,6 +52,32 @@ plot(nottem, main = "Serie Nottem con Valores Atípicos",
 points(time(nottem)[nottem %in% outliers], outliers, col = "red", pch = 19)
 
 
+system("git status")
+system("git ls-files")
+system("git commit -m 'Primer commit: analisis de nottem'")
+
+
+system('git commit -m "Primer commit: analisis de nottem"')
+system('git config --global user.name "mariafernandez885"')
+system('git config --global user.email "mariafernandez885@comunidadunir.com"')
+system('git config --global --list')
+system('git commit -m "Primer commit: analisis de nottem"')
+system('git push -u origin main')
+
+
+
+system('git remote -v')
+system('git status')
+
+system('git add nottem.R')
+system('git log')
+system('git push origin main')
+
+
+
+
+
+
 
 
 
